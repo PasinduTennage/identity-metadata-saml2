@@ -21,6 +21,7 @@ package org.wso2.carbon.identity.outbound.metadata.saml2.publish.internal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
+import org.wso2.carbon.idp.mgt.util.MetadataConverter;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.ConfigurationContextService;
@@ -43,6 +44,11 @@ import org.osgi.service.http.HttpService;
  * @scr.reference name="osgi.httpservice" interface="org.osgi.service.http.HttpService"
  * cardinality="1..1" policy="dynamic" bind="setHttpService"
  * unbind="unsetHttpService"
+ * @scr.reference name="identity.provider.saml.service.component"
+ * interface="org.wso2.carbon.idp.mgt.util.MetadataConverter"
+ * cardinality="0..n" policy="dynamic"
+ * bind="setMetadataConverterService"
+ * unbind="unsetMetadataConverterService"
  */
 
 public class SAMLMetadataPublisherServiceComponent {
@@ -118,6 +124,24 @@ public class SAMLMetadataPublisherServiceComponent {
             log.debug("HTTP Service is unset in the SAML SSO bundle");
         }
         SAMLMetadataPublisherServiceComponentHolder.getInstance().setHttpService(null);
+    }
+
+    protected void setMetadataConverterService(MetadataConverter converter) {
+        if (log.isDebugEnabled()) {
+            log.debug("Metadata converter set in Identity idp-mgt bundle");
+        }
+        try {
+            SAMLMetadataPublisherServiceComponentHolder.getInstance().addMetadataConverter(converter);
+        } catch (Throwable e) {
+            log.error("Failed to get a reference to the Metadata Converter in idp-mgt bundle", e);
+        }
+    }
+
+    protected void unsetMetadataConverterService(MetadataConverter metadataConverter) {
+        if (log.isDebugEnabled()) {
+            log.debug("org.wso2.carbon.idp.mgt.util.MetadataConverter unset in idp-mgt");
+        }
+        SAMLMetadataPublisherServiceComponentHolder.getInstance().removeMetadataConverter(metadataConverter);
     }
 
 
