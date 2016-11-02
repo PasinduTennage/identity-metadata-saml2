@@ -21,6 +21,8 @@ package org.wso2.carbon.identity.outbound.metadata.saml2.publish.internal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.IdentityProcessor;
+import org.wso2.carbon.identity.outbound.metadata.saml2.publish.processor.IDPMetadataPublishProcessor;
 import org.wso2.carbon.idp.mgt.util.MetadataConverter;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
@@ -49,6 +51,7 @@ import org.osgi.service.http.HttpService;
  * cardinality="0..n" policy="dynamic"
  * bind="setMetadataConverterService"
  * unbind="unsetMetadataConverterService"
+ *
  */
 
 public class SAMLMetadataPublisherServiceComponent {
@@ -58,6 +61,7 @@ public class SAMLMetadataPublisherServiceComponent {
 
     protected void activate(ComponentContext context) {
 
+        context.getBundleContext().registerService(IdentityProcessor.class.getName(), new IDPMetadataPublishProcessor(), null);
             //MetadataConverter converter = new SAMLMetadataConverter();
             //context.getBundleContext().registerService(MetadataConverter.class.getName(),  converter, null);
         if (log.isDebugEnabled()) {
