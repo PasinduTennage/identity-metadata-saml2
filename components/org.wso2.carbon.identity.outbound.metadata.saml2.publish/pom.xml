@@ -66,15 +66,10 @@
             <groupId>org.wso2.carbon.identity.framework</groupId>
             <artifactId>org.wso2.carbon.security.mgt</artifactId>
         </dependency>
-
-
-
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.utils</artifactId>
         </dependency>
-
-
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.logging</artifactId>
@@ -82,9 +77,7 @@
         <dependency>
             <groupId>org.wso2.carbon.identity.framework</groupId>
             <artifactId>org.wso2.carbon.identity.application.authentication.framework</artifactId>
-            <version>LATEST</version>
-
-        </dependency>
+         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents.wso2</groupId>
             <artifactId>httpcore</artifactId>
@@ -109,7 +102,6 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>1.4.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
@@ -119,6 +111,7 @@
                             org.wso2.carbon.identity.outbound.metadata.saml2.publish.internal,
                         </Private-Package>
                         <Import-Package>
+                            javax.servlet.http,
                             org.apache.commons.codec.binary; version="${commons-codec.wso2.osgi.version.range}",
                             org.wso2.carbon.identity.core; version="${carbon.identity.package.import.version.range}",
                             javax.xml.parsers ; version="${javax.xml.range}",
@@ -177,6 +170,9 @@
                             org.wso2.carbon.utils,
                             org.wso2.carbon.identity.application.authentication.framework.exception,
                             org.wso2.carbon.identity.application.authentication.framework.inbound,
+                            org.opensaml,
+                            org.opensaml.saml2.core,
+                            org.opensaml.saml2.core.impl,
                         </Import-Package>
                         <Export-Package>
 
