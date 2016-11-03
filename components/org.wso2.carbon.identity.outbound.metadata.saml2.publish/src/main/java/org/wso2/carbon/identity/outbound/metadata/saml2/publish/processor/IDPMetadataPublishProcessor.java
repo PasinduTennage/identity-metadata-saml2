@@ -57,7 +57,7 @@ public class IDPMetadataPublishProcessor extends IdentityProcessor {
 
     @Override
     public boolean canHandle(IdentityRequest identityRequest) {
-        if(identityRequest.getPathInfo().toString().contains("/metadata/saml2")){
+        if(identityRequest.getPathInfo().contains("/metadata/saml2")){
             return true ;
         }else{
             return false;
@@ -67,13 +67,13 @@ public class IDPMetadataPublishProcessor extends IdentityProcessor {
     public SAMLMetadataResponse.SAMLMetadataResponseBuilder process(IdentityRequest identityRequest) throws
             FrameworkException {
 
-
-        String tennantDomain = CarbonContext.getThreadLocalCarbonContext().getTenantDomain();
-        IdentityProviderManager identityProviderManager = IdentityProviderManager.getInstance();
+        String tennantDomain = CarbonContext.getThreadLocalCarbonContext().getTenantDomain();//TODO
+        IdentityProviderManager identityProviderManager = IdentityProviderManager.getInstance();//TODO
         String  metadata = null;
         try {
             metadata = identityProviderManager.getResidentIDPMetadata(tennantDomain);
         }catch(IdentityProviderManagementException ex){
+            FrameworkException exception = new FrameworkException(ex.getMessage());
 
         }
         IdentityMessageContext context = new IdentityMessageContext(identityRequest);
