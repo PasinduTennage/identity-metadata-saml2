@@ -17,27 +17,25 @@
  */
 package org.wso2.carbon.identity.outbound.metadata.saml2.publish.bean;
 
-import org.opensaml.saml2.core.Response;
-import org.opensaml.saml2.core.impl.ResponseBuilder;
+
 import org.wso2.carbon.identity.application.authentication.framework.inbound.IdentityMessageContext;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.IdentityResponse;
 import org.wso2.carbon.identity.outbound.metadata.saml2.publish.util.SAMLMetadataUtil;
 
 /**
  * This class implements SAMLMetadataResponse and the corresponding builder
- * */
+ */
 
 public class SAMLMetadataResponse extends IdentityResponse {
 
 
-    private String metadata ;
+    private String metadata;
 
     protected SAMLMetadataResponse(IdentityResponseBuilder builder) {
         super(builder);
 
         metadata = ((SAMLMetadataResponseBuilder) builder).metadata;
     }
-
 
 
     public String getMetadata() {
@@ -50,14 +48,17 @@ public class SAMLMetadataResponse extends IdentityResponse {
 
     public static class SAMLMetadataResponseBuilder extends IdentityResponseBuilder {
 
-        private String metadata ;
+        private String metadata;
+
         static {
             SAMLMetadataUtil.doBootstrap();
         }
+
         public SAMLMetadataResponseBuilder(IdentityMessageContext context) {
             super(context);
 
         }
+
         public String getMetadata() {
             return metadata;
         }
@@ -71,7 +72,6 @@ public class SAMLMetadataResponse extends IdentityResponse {
             return new SAMLMetadataResponse(this);
         }
     }
-
 
 
 }

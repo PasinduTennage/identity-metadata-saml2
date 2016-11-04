@@ -25,6 +25,7 @@ import org.wso2.carbon.identity.application.authentication.framework.inbound.Htt
 import org.wso2.carbon.identity.application.authentication.framework.inbound.IdentityProcessor;
 import org.wso2.carbon.identity.outbound.metadata.saml2.publish.bean.HttpSAMLMetadataResponseFactory;
 import org.wso2.carbon.identity.outbound.metadata.saml2.publish.processor.IDPMetadataPublishProcessor;
+import org.wso2.carbon.idp.mgt.IdpManager;
 import org.wso2.carbon.idp.mgt.util.MetadataConverter;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
@@ -53,7 +54,9 @@ import org.osgi.service.http.HttpService;
  * cardinality="0..n" policy="dynamic"
  * bind="setMetadataConverterService"
  * unbind="unsetMetadataConverterService"
- *
+ * @scr.reference name="IdentityProviderManager"
+ * interface="org.wso2.carbon.idp.mgt.IdpManager" cardinality="1..1"
+ * policy="dynamic" bind="setIdpManager" unbind="unsetIdpManager"
  */
 
 public class SAMLMetadataPublisherServiceComponent {
@@ -76,6 +79,7 @@ public class SAMLMetadataPublisherServiceComponent {
             log.debug("Identity Management bundle is de-activated");
         }
     }
+
     protected void setRealmService(RealmService realmService) {
         if (log.isDebugEnabled()) {
             log.debug("RealmService is set in IDP Metadata bundle");
@@ -91,11 +95,9 @@ public class SAMLMetadataPublisherServiceComponent {
     }
 
 
-
     public static void setRegistryService(RegistryService registryService) {
         SAMLMetadataPublisherServiceComponentHolder.getInstance().setRegistryService(registryService);
     }
-
 
 
     protected void unsetRegistryService(RegistryService registryService) {
@@ -118,6 +120,7 @@ public class SAMLMetadataPublisherServiceComponent {
         }
         SAMLMetadataPublisherServiceComponentHolder.getInstance().setConfigCtxService(null);
     }
+
     protected void setHttpService(HttpService httpService) {
         if (log.isDebugEnabled()) {
             log.debug("HTTP Service is set in the SAML SSO bundle");
@@ -150,7 +153,13 @@ public class SAMLMetadataPublisherServiceComponent {
         SAMLMetadataPublisherServiceComponentHolder.getInstance().removeMetadataConverter(metadataConverter);
     }
 
+    protected void unsetIdpManager(IdpManager idpManager) {
+        SAMLMetadataPublisherServiceComponentHolder.getInstance().setIdpManager(null);
+    }
 
+    protected void setIdpManager(IdpManager idpManager) {
+        SAMLMetadataPublisherServiceComponentHolder.getInstance().setIdpManager(idpManager);
+    }
 
 
 }

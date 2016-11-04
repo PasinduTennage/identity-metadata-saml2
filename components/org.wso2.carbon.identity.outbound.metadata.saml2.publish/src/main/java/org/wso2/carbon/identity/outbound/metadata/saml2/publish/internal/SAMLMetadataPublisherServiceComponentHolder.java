@@ -18,27 +18,31 @@
 package org.wso2.carbon.identity.outbound.metadata.saml2.publish.internal;
 
 import org.osgi.service.http.HttpService;
+import org.wso2.carbon.idp.mgt.IdpManager;
 import org.wso2.carbon.idp.mgt.util.MetadataConverter;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.ConfigurationContextService;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Components holder
- * */
+ */
 
 public class SAMLMetadataPublisherServiceComponentHolder {
-    private RegistryService registryService ;
+    private RegistryService registryService;
     private RealmService realmService;
     private ConfigurationContextService configCtxService;
     private HttpService httpService;
     private List<MetadataConverter> metadataConverters = new ArrayList<>();
+    private IdpManager idpManager;
 
     private static SAMLMetadataPublisherServiceComponentHolder samlMetadataPublisherServiceComponentHolder = new
             SAMLMetadataPublisherServiceComponentHolder();
-    public static SAMLMetadataPublisherServiceComponentHolder getInstance(){
+
+    public static SAMLMetadataPublisherServiceComponentHolder getInstance() {
         return samlMetadataPublisherServiceComponentHolder;
     }
 
@@ -75,10 +79,11 @@ public class SAMLMetadataPublisherServiceComponentHolder {
         this.httpService = httpService;
     }
 
-    public void addMetadataConverter(MetadataConverter converter){
+    public void addMetadataConverter(MetadataConverter converter) {
         this.getMetadataConverters().add(converter);
     }
-    public void removeMetadataConverter(MetadataConverter converter){
+
+    public void removeMetadataConverter(MetadataConverter converter) {
         this.getMetadataConverters().remove(converter);
     }
 
@@ -88,5 +93,13 @@ public class SAMLMetadataPublisherServiceComponentHolder {
 
     public void setMetadataConverters(List<MetadataConverter> metadataConverters) {
         this.metadataConverters = metadataConverters;
+    }
+
+    public IdpManager getIdpManager() {
+        return idpManager;
+    }
+
+    public void setIdpManager(IdpManager idpManager) {
+        this.idpManager = idpManager;
     }
 }

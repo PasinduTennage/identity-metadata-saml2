@@ -23,11 +23,12 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.HttpIdentityResponse;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.HttpIdentityResponseFactory;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.IdentityResponse;
+
 import javax.servlet.http.HttpServletResponse;
 
 /**
  * This class implements functionality to build a HTTPIdentityResponse
- * */
+ */
 
 public class HttpSAMLMetadataResponseFactory extends HttpIdentityResponseFactory {
 
@@ -40,7 +41,7 @@ public class HttpSAMLMetadataResponseFactory extends HttpIdentityResponseFactory
 
     @Override
     public boolean canHandle(IdentityResponse identityResponse) {
-        if (identityResponse instanceof SAMLMetadataResponse) {
+        if (identityResponse instanceof SAMLMetadataResponse || identityResponse instanceof SAMLMetadataErrorResponse) {
             return true;
         }
         return false;
@@ -51,8 +52,9 @@ public class HttpSAMLMetadataResponseFactory extends HttpIdentityResponseFactory
 
         if (identityResponse instanceof SAMLMetadataResponse) {
             return sendResponse(identityResponse);
+        } else {
+            return sendErrorResponse(identityResponse);
         }
-        return null;
     }
 
     private HttpIdentityResponse.HttpIdentityResponseBuilder sendResponse(IdentityResponse identityResponse) {
@@ -72,5 +74,19 @@ public class HttpSAMLMetadataResponseFactory extends HttpIdentityResponseFactory
     @Override
     public void create(HttpIdentityResponse.HttpIdentityResponseBuilder httpIdentityResponseBuilder, IdentityResponse
             identityResponse) {
+    }
+
+    private HttpIdentityResponse.HttpIdentityResponseBuilder sendErrorResponse(IdentityResponse identityResponse) {
+        SAMLMetadataErrorResponse errorResponse = ((SAMLMetadataErrorResponse) identityResponse);
+        HttpIdentityResponse.HttpIdentityResponseBuilder builder = new HttpIdentityResponse
+                .HttpIdentityResponseBuilder();
+
+        String message = errorResponse.getMessage();
+        StringBuilder out = new StringBuilder();
+        out.append(message);
+        builder.setBody(out.toString());
+        builder.setContentType("text/html");
+        builder.setStatusCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        return builder;
     }
 }

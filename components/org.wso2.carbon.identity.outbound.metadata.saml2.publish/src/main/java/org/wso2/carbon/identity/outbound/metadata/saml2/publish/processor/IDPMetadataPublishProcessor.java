@@ -22,10 +22,12 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authentication.framework.exception.FrameworkException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.*;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
+import org.wso2.carbon.identity.outbound.metadata.saml2.publish.bean.SAMLMetadataErrorResponse;
 import org.wso2.carbon.identity.outbound.metadata.saml2.publish.bean.SAMLMetadataResponse;
+import org.wso2.carbon.identity.outbound.metadata.saml2.publish.internal.SAMLMetadataPublisherServiceComponentHolder;
 import org.wso2.carbon.idp.mgt.IdentityProviderManagementException;
 import org.wso2.carbon.idp.mgt.IdentityProviderManager;
-import org.wso2.carbon.context.CarbonContext;
+
 
 /**
  * This class implements functionality to set metadata content to SAML2MetadataResponseBuilder
@@ -64,16 +66,19 @@ public class IDPMetadataPublishProcessor extends IdentityProcessor {
         }
     }
 
-    public SAMLMetadataResponse.SAMLMetadataResponseBuilder process(IdentityRequest identityRequest) throws
+    public IdentityResponse.IdentityResponseBuilder process(IdentityRequest identityRequest) throws
             FrameworkException {
 
-        String tennantDomain = CarbonContext.getThreadLocalCarbonContext().getTenantDomain();//TODO
-        IdentityProviderManager identityProviderManager = IdentityProviderManager.getInstance();//TODO
+        String tennantDomain = identityRequest.getTenantDomain();
+        IdentityProviderManager identityProviderManager = (IdentityProviderManager)SAMLMetadataPublisherServiceComponentHolder.getInstance().getIdpManager();
         String  metadata = null;
         try {
             metadata = identityProviderManager.getResidentIDPMetadata(tennantDomain);
         }catch(IdentityProviderManagementException ex){
-            FrameworkException exception = new FrameworkException(ex.getMessage());
+            IdentityMessageContext context = new IdentityMessageContext(identityRequest);
+            SAMLMetadataErrorResponse.SAMLMetadataErrorResponseBuilder responseBuilder = new SAMLMetadataErrorResponse.SAMLMetadataErrorResponseBuilder(context);
+            responseBuilder.setMessage("Internal Server Error");
+            return responseBuilder;
 
         }
         IdentityMessageContext context = new IdentityMessageContext(identityRequest);
